@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/images/logo.png" alt="InfluInbox Logo" width="400" style="margin: -80px 0 -60px 0;" />
+  <img src="./assets/images/logo-squished.png" alt="InfluInbox Logo" width="400" />
 </div>
 
 InfluInbox is the first smart inbox assistant designed specifically for influencers and creators. It organizes brand deals, automates replies, summarizes contracts, and tracks campaign deliverables—all from your existing email inbox.
