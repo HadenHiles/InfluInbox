@@ -4,51 +4,6 @@
 
 InfluInbox is the first smart inbox assistant designed specifically for influencers and creators. It organizes brand deals, automates replies, summarizes contracts, and tracks campaign deliverables—all from your existing email inbox.
 
-## 📱 Flutter Installation & Setup
-
-### Prerequisites
-
-- [Flutter SDK](https://flutter.dev/docs/get-started/install) (version 3.0 or higher)
-- [Dart SDK](https://dart.dev/get-dart) (comes with Flutter)
-- [Android Studio](https://developer.android.com/studio) or [Xcode](https://developer.apple.com/xcode/) for device simulation
-- Git for version control
-
-### Installation Steps
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/yourusername/InfluInbox.git
-   cd InfluInbox
-   ```
-
-2. **Install Flutter dependencies**
-
-   ```bash
-   flutter pub get
-   ```
-
-3. **Run the app**
-
-   ```bash
-   # For development
-   flutter run
-
-   # For specific platform
-   flutter run -d ios
-   flutter run -d android
-   ```
-
-4. **Build for production**
-
-   ```bash
-   # Android
-   flutter build apk --release
-
-   # iOS
-   flutter build ios --release
-   ```
-
 ## 🎯 Purpose
 
 InfluInbox revolutionizes how influencers and content creators manage their professional communications. By integrating directly with your existing email infrastructure, InfluInbox provides intelligent automation and organization specifically tailored for the creator economy.
