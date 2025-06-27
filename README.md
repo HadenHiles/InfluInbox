@@ -68,7 +68,7 @@ InfluInbox revolutionizes how influencers and content creators manage their prof
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
+We welcome contributions from the community! Please read our [Contributing Guidelines](./CONTRIBUTING.md) before submitting pull requests.
 
 ## 📄 License
 
