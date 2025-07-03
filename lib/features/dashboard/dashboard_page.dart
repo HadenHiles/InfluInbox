@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:go_router/go_router.dart';
 import '../../services/firebase_services.dart';
 
 /// Main dashboard page after authentication
@@ -29,7 +30,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
 
         // Redirect to auth if user signs out
         if (user == null) {
-          Navigator.of(context).pushReplacementNamed('/auth');
+          context.go('/auth');
         }
       }
     });
@@ -45,7 +46,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     try {
       await FirebaseAuthService.signOut();
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/auth');
+        context.go('/auth');
       }
     } catch (e) {
       if (mounted) {

@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'services/firebase_services.dart';
-import 'providers/auth_provider.dart';
-import 'features/auth/auth_page.dart';
-import 'features/dashboard/dashboard_page.dart';
+import 'config/router_config.dart';
 import 'utils/constants.dart';
 
 void main() async {
@@ -26,12 +24,14 @@ void main() async {
   runApp(const ProviderScope(child: InfluInboxApp()));
 }
 
-class InfluInboxApp extends StatelessWidget {
+class InfluInboxApp extends ConsumerWidget {
   const InfluInboxApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(title: AppConstants.appName, theme: _buildTheme(), home: const AuthWrapper(), routes: {'/auth': (context) => const AuthPage(), '/dashboard': (context) => const DashboardPage()});
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+
+    return MaterialApp.router(title: AppConstants.appName, theme: _buildTheme(), routerConfig: router);
   }
 
   ThemeData _buildTheme() {
@@ -49,47 +49,6 @@ class InfluInboxApp extends StatelessWidget {
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius)),
         contentPadding: const EdgeInsets.all(AppConstants.defaultPadding),
-      ),
-    );
-  }
-}
-
-/// Wrapper widget that handles authentication state
-class AuthWrapper extends ConsumerWidget {
-  const AuthWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
-
-    return authState.when(
-      data: (user) {
-        if (user != null) {
-          return const DashboardPage();
-        } else {
-          return const AuthPage();
-        }
-      },
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (error, _) => Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              Text('Error: $error'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  // Retry authentication
-                  ref.invalidate(authStateProvider);
-                },
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

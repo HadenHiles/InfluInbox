@@ -51,6 +51,9 @@ dependencies:
   
   # Utility packages
   crypto: ^3.0.3
+  
+  # Navigation
+  go_router: ^14.2.7
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../services/firebase_services.dart';
 import '../../config/oauth_config.dart';
 
@@ -19,7 +20,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
     try {
       await FirebaseAuthService.signInWithGoogle();
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/dashboard');
+        context.go('/dashboard');
       }
     } catch (e) {
       if (mounted) {
@@ -37,7 +38,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
     try {
       await FirebaseAuthService.signInWithMicrosoft();
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/dashboard');
+        context.go('/dashboard');
       }
     } catch (e) {
       if (mounted) {
