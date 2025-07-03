@@ -6,6 +6,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../config/oauth_config.dart';
 
 /// Firebase services singleton for easy access throughout the app
 class FirebaseServices {
@@ -78,7 +79,11 @@ class FirebaseServices {
 /// Authentication helper methods
 class FirebaseAuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
-  static final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile', 'https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send']);
+  
+  // Use configuration-based scopes
+  static final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: OAuthConfig.googleScopes,
+  );
 
   /// Get current user
   static User? get currentUser => _auth.currentUser;
@@ -97,6 +102,30 @@ class FirebaseAuthService {
   /// Create user with email and password
   static Future<UserCredential> createUserWithEmailAndPassword({required String email, required String password}) async {
     return await _auth.createUserWithEmailAndPassword(email: email, password: password);
+  }
+
+  /// Switch to production scopes (call this after Google verification)
+  static GoogleSignIn createProductionGoogleSignIn() {
+    return GoogleSignIn(scopes: OAuthConfig.productionGoogleScopes);
+  }
+
+  /// Check if user has Gmail access
+  static Future<bool> hasGmailAccess() async {
+    try {
+      final GoogleSignInAccount? googleUser = _googleSignIn.currentUser;
+      if (googleUser == null) return false;
+      
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final accessToken = googleAuth.accessToken;
+      
+      if (accessToken == null) return false;
+      
+      // Check if we have Gmail scopes by trying to access Gmail API
+      final scopes = googleUser.serverAuthCode;
+      return scopes != null;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Sign in with Google (Gmail)

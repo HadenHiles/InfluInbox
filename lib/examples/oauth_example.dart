@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/firebase_services.dart';
+import '../config/oauth_config.dart';
 
 /// Example page demonstrating OAuth authentication with Google and Microsoft
 class OAuthExamplePage extends StatefulWidget {
@@ -169,6 +170,52 @@ class _OAuthExamplePageState extends State<OAuthExamplePage> {
                   ),
                 ),
               ),
+            ],
+
+            const SizedBox(height: 20),
+
+            // Gmail Features Limitation Warning
+            if (OAuthConfig.isDevelopment) ...[
+              Card(
+                color: Colors.orange.shade50,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.warning, color: Colors.orange.shade700),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Development Mode',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.orange.shade700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        OAuthConfig.gmailLimitationMessage,
+                        style: TextStyle(color: Colors.orange.shade800),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Current scopes: ${OAuthConfig.googleScopes.join(", ")}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.orange.shade600,
+                          fontFamily: 'monospace',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
             ],
 
             if (isLoading)
