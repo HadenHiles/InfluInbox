@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "184330992881",
+    "project_id": "influ-inbox",
+    "storage_bucket": "influ-inbox.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184330992881:android:057b00ca410860d58d7d50",
+        "android_client_info": {
+          "package_name": "com.hadenhiles.influinbox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "184330992881-gmvpd9ckquh5sl63st4c4tnvjecj71l2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hadenhiles.influinbox",
+            "certificate_hash": "069bd1a9079982a1780ffac2fa85eacd1dee7c6f"
+          }
+        },
+        {
+          "client_id": "184330992881-56uc418u8uvemfhpl19sj718fit5o6td.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNE72_qrLXSVD9JbQFTPTbciUpPnW6S0Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "184330992881-56uc418u8uvemfhpl19sj718fit5o6td.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "184330992881-bthrqgvll9qrifihf0h72g8mbkg6m35a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hadenhiles.influinbox"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

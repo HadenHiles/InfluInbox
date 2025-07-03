@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'services/firebase_services.dart';
 
 final counterProvider = StateProvider<int>((ref) => 0);
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase for all platforms
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Configure Firestore settings
+  FirebaseServices.configureFirestore();
+
+  // Initialize Firebase App Check (optional, for production apps)
+  // await FirebaseServices.initializeAppCheck();
+
+  // Initialize Firebase Messaging (optional, for push notifications)
+  // await FirebaseServices.initializeMessaging();
+
   runApp(const ProviderScope(child: InfluInboxApp()));
 }
 
