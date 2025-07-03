@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 /// Firebase services singleton for easy access throughout the app
 class FirebaseServices {
@@ -77,6 +78,7 @@ class FirebaseServices {
 /// Authentication helper methods
 class FirebaseAuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
+  static final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile', 'https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send']);
 
   /// Get current user
   static User? get currentUser => _auth.currentUser;
@@ -97,9 +99,92 @@ class FirebaseAuthService {
     return await _auth.createUserWithEmailAndPassword(email: email, password: password);
   }
 
-  /// Sign out
+  /// Sign in with Google (Gmail)
+  static Future<UserCredential?> signInWithGoogle() async {
+    try {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        // User canceled the sign-in
+        return null;
+      }
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+
+      // Sign in to Firebase with the Google credential
+      return await _auth.signInWithCredential(credential);
+    } catch (e) {
+      print('Error signing in with Google: $e');
+      rethrow;
+    }
+  }
+
+  /// Sign in with Microsoft (Outlook)
+  static Future<UserCredential?> signInWithMicrosoft() async {
+    try {
+      // Create a Microsoft provider
+      final microsoftProvider = MicrosoftAuthProvider();
+
+      // Add scopes for Outlook access
+      microsoftProvider.addScope('https://graph.microsoft.com/Mail.Read');
+      microsoftProvider.addScope('https://graph.microsoft.com/Mail.Send');
+      microsoftProvider.addScope('https://graph.microsoft.com/User.Read');
+
+      // Sign in with popup (web) or redirect (mobile)
+      return await _auth.signInWithProvider(microsoftProvider);
+    } catch (e) {
+      print('Error signing in with Microsoft: $e');
+      rethrow;
+    }
+  }
+
+  /// Get Google access token for Gmail API calls
+  static Future<String?> getGoogleAccessToken() async {
+    try {
+      final GoogleSignInAccount? googleUser = _googleSignIn.currentUser;
+      if (googleUser == null) {
+        // User not signed in with Google
+        return null;
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      return googleAuth.accessToken;
+    } catch (e) {
+      print('Error getting Google access token: $e');
+      return null;
+    }
+  }
+
+  /// Get Microsoft access token for Outlook API calls
+  static Future<String?> getMicrosoftAccessToken() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return null;
+
+      // Get the Microsoft provider data
+      for (final providerData in user.providerData) {
+        if (providerData.providerId == 'microsoft.com') {
+          // You'll need to implement token refresh logic here
+          // This is a simplified example
+          final result = await user.getIdTokenResult();
+          return result.token;
+        }
+      }
+      return null;
+    } catch (e) {
+      print('Error getting Microsoft access token: $e');
+      return null;
+    }
+  }
+
+  /// Sign out from all providers
   static Future<void> signOut() async {
-    await _auth.signOut();
+    await Future.wait([_auth.signOut(), _googleSignIn.signOut()]);
   }
 
   /// Send password reset email
