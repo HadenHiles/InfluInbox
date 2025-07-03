@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'services/firebase_services.dart';
-
-final counterProvider = StateProvider<int>((ref) => 0);
+import 'providers/auth_provider.dart';
+import 'features/auth/auth_page.dart';
+import 'features/dashboard/dashboard_page.dart';
+import 'utils/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,32 +31,66 @@ class InfluInboxApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Influinbox',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const HomePage(),
+    return MaterialApp(title: AppConstants.appName, theme: _buildTheme(), home: const AuthWrapper(), routes: {'/auth': (context) => const AuthPage(), '/dashboard': (context) => const DashboardPage()});
+  }
+
+  ThemeData _buildTheme() {
+    return ThemeData(
+      primarySwatch: Colors.blue,
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.light),
+      cardTheme: const CardThemeData(elevation: 2, shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius)),
+          padding: const EdgeInsets.symmetric(horizontal: AppConstants.defaultPadding, vertical: AppConstants.smallPadding),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius)),
+        contentPadding: const EdgeInsets.all(AppConstants.defaultPadding),
+      ),
     );
   }
 }
 
-class HomePage extends ConsumerWidget {
-  const HomePage({super.key});
+/// Wrapper widget that handles authentication state
+class AuthWrapper extends ConsumerWidget {
+  const AuthWrapper({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(counterProvider);
-    return Scaffold(
-      appBar: AppBar(title: const Text('Influinbox')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text('$count', style: Theme.of(context).textTheme.headlineMedium),
-          ],
+    final authState = ref.watch(authStateProvider);
+
+    return authState.when(
+      data: (user) {
+        if (user != null) {
+          return const DashboardPage();
+        } else {
+          return const AuthPage();
+        }
+      },
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (error, _) => Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              Text('Error: $error'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  // Retry authentication
+                  ref.invalidate(authStateProvider);
+                },
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () => ref.read(counterProvider.notifier).state++, tooltip: 'Increment', child: const Icon(Icons.add)),
     );
   }
 }

@@ -189,26 +189,16 @@ class _OAuthExamplePageState extends State<OAuthExamplePage> {
                           const SizedBox(width: 8),
                           Text(
                             'Development Mode',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.orange.shade700,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange.shade700),
                           ),
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        OAuthConfig.gmailLimitationMessage,
-                        style: TextStyle(color: Colors.orange.shade800),
-                      ),
+                      Text(OAuthConfig.gmailLimitationMessage, style: TextStyle(color: Colors.orange.shade800)),
                       const SizedBox(height: 8),
                       Text(
                         'Current scopes: ${OAuthConfig.googleScopes.join(", ")}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.orange.shade600,
-                          fontFamily: 'monospace',
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.orange.shade600, fontFamily: 'monospace'),
                       ),
                     ],
                   ),

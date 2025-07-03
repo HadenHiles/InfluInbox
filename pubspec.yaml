@@ -48,6 +48,9 @@ dependencies:
   # OAuth packages
   google_sign_in: ^6.2.1
   extension_google_sign_in_as_googleapis_auth: ^2.0.12
+  
+  # Utility packages
+  crypto: ^3.0.3
 
 dev_dependencies:
   flutter_test:

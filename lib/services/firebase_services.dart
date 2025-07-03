@@ -79,11 +79,9 @@ class FirebaseServices {
 /// Authentication helper methods
 class FirebaseAuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
-  
+
   // Use configuration-based scopes
-  static final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: OAuthConfig.googleScopes,
-  );
+  static final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: OAuthConfig.googleScopes);
 
   /// Get current user
   static User? get currentUser => _auth.currentUser;
@@ -114,12 +112,12 @@ class FirebaseAuthService {
     try {
       final GoogleSignInAccount? googleUser = _googleSignIn.currentUser;
       if (googleUser == null) return false;
-      
+
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final accessToken = googleAuth.accessToken;
-      
+
       if (accessToken == null) return false;
-      
+
       // Check if we have Gmail scopes by trying to access Gmail API
       final scopes = googleUser.serverAuthCode;
       return scopes != null;
