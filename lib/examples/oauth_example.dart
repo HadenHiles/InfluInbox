@@ -5,7 +5,7 @@ import '../config/oauth_config.dart';
 
 /// Example page demonstrating OAuth authentication with Google and Microsoft
 class OAuthExamplePage extends StatefulWidget {
-  const OAuthExamplePage({Key? key}) : super(key: key);
+  const OAuthExamplePage({super.key});
 
   @override
   State<OAuthExamplePage> createState() => _OAuthExamplePageState();
@@ -37,15 +37,21 @@ class _OAuthExamplePageState extends State<OAuthExamplePage> {
       if (userCredential != null) {
         // Get access token for Gmail API calls
         final token = await FirebaseAuthService.getGoogleAccessToken();
-        setState(() {
-          googleAccessToken = token;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Successfully signed in with Google!')));
+        if (mounted) {
+          setState(() {
+            googleAccessToken = token;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Successfully signed in with Google!')));
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error signing in with Google: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error signing in with Google: $e')));
+      }
     } finally {
-      setState(() => isLoading = false);
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
   }
 
@@ -56,15 +62,21 @@ class _OAuthExamplePageState extends State<OAuthExamplePage> {
       if (userCredential != null) {
         // Get access token for Outlook API calls
         final token = await FirebaseAuthService.getMicrosoftAccessToken();
-        setState(() {
-          microsoftAccessToken = token;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Successfully signed in with Microsoft!')));
+        if (mounted) {
+          setState(() {
+            microsoftAccessToken = token;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Successfully signed in with Microsoft!')));
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error signing in with Microsoft: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error signing in with Microsoft: $e')));
+      }
     } finally {
-      setState(() => isLoading = false);
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
   }
 
@@ -72,15 +84,21 @@ class _OAuthExamplePageState extends State<OAuthExamplePage> {
     setState(() => isLoading = true);
     try {
       await FirebaseAuthService.signOut();
-      setState(() {
-        googleAccessToken = null;
-        microsoftAccessToken = null;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Successfully signed out!')));
+      if (mounted) {
+        setState(() {
+          googleAccessToken = null;
+          microsoftAccessToken = null;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Successfully signed out!')));
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error signing out: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error signing out: $e')));
+      }
     } finally {
-      setState(() => isLoading = false);
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
   }
 

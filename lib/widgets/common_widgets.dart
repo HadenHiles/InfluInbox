@@ -5,7 +5,7 @@ class LoadingWidget extends StatelessWidget {
   final String? message;
   final double? size;
 
-  const LoadingWidget({Key? key, this.message, this.size = 40}) : super(key: key);
+  const LoadingWidget({super.key, this.message, this.size = 40});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class ErrorWidget extends StatelessWidget {
   final VoidCallback? onRetry;
   final IconData? icon;
 
-  const ErrorWidget({Key? key, this.message, this.onRetry, this.icon = Icons.error_outline}) : super(key: key);
+  const ErrorWidget({super.key, this.message, this.onRetry, this.icon = Icons.error_outline});
 
   @override
   Widget build(BuildContext context) {

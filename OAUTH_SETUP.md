@@ -3,19 +3,21 @@
 This guide provides detailed steps to register OAuth2 applications for Google (Gmail) and Microsoft (Outlook) for use with Firebase Authentication in your Flutter app.
 
 ## Table of Contents
+
 - [Prerequisites](#prerequisites)
 - [Google OAuth2 Setup for Gma### Troubleshooting
 
-### Common Issues
+### Google OAuth2 Common Issues
 
 1. **"redirect_uri_mismatch"**: Ensure redirect URIs match exactly in OAuth config
 2. **"invalid_client"**: Check client ID and secret are correct
 3. **"insufficient_scope"**: Verify required scopes are added and consented
 4. **iOS build errors**: Ensure URL schemes are correctly configured
-5. **"Android package name and fingerprint already in use"**: 
+5. **"Android package name and fingerprint already in use"**:
    - Check if the package name is registered in another Google Cloud project
    - Use a different package name (e.g., add `.dev` suffix for development)
    - Or find and delete the existing registration if it's not neededgle-oauth2-setup-for-gmail)
+
 - [Microsoft OAuth2 Setup for Outlook](#microsoft-oauth2-setup-for-outlook)
 - [Firebase Authentication Configuration](#firebase-authentication-configuration)
 - [Flutter App Configuration](#flutter-app-configuration)
@@ -25,6 +27,7 @@ This guide provides detailed steps to register OAuth2 applications for Google (G
 ## Prerequisites
 
 Before starting, ensure you have:
+
 - A Firebase project created and configured
 - Google account for Google Cloud Console access
 - Microsoft account for Azure Portal access
@@ -98,7 +101,7 @@ Before starting, ensure you have:
 3. Configure the OAuth client:
    - **Application type**: Select **"Web application"**
    - **Name**: `InfluInbox Web Client`
-   
+
 4. **Authorized redirect URIs** - Add these URIs:
    - For Firebase: `https://your-project-id.firebaseapp.com/__/auth/handler`
    - For local development: `http://localhost:3000/__/auth/handler`
@@ -114,10 +117,11 @@ Before starting, ensure you have:
 
 1. Create additional OAuth clients for mobile:
    - Click **"Create Credentials"** > **"OAuth client ID"**
-   - **Application type**: **"Android"** 
+   - **Application type**: **"Android"**
    - **Name**: `InfluInbox Android`
    - **Package name**: Your Android package name (e.g., `com.hadenhiles.influinbox`)
    - **SHA-1 certificate fingerprint**: Get this by running:
+
      ```bash
      cd android && ./gradlew signingReport
      ```
@@ -144,10 +148,10 @@ Before starting, ensure you have:
 1. Fill in the application details:
    - **Name**: `InfluInbox`
    - **Supported account types**: Select **"Accounts in any organizational directory (Any Azure AD directory - Multitenant) and personal Microsoft accounts (e.g. Skype, Xbox)"**
-   - **Redirect URI**: 
+   - **Redirect URI**:
      - Platform: **"Web"**
      - URI: `https://your-project-id.firebaseapp.com/__/auth/handler`
-   
+
 2. Click **"Register"**
 
 3. **Save these important values** from the Overview page:
@@ -247,9 +251,11 @@ dependencies:
 ### Step 2: Android Configuration
 
 1. **Add SHA-1 fingerprints to Firebase**:
+
    ```bash
    cd android && ./gradlew signingReport
    ```
+
    Copy the SHA-1 and add it to Firebase Console > Project Settings > Your apps > Android app
 
 2. **Download updated `google-services.json`** and replace the existing file in `android/app/`
@@ -257,6 +263,7 @@ dependencies:
 ### Step 3: iOS Configuration
 
 1. **Update `ios/Runner/Info.plist`**:
+
    ```xml
    <key>CFBundleURLTypes</key>
    <array>
@@ -270,6 +277,7 @@ dependencies:
        </dict>
    </array>
    ```
+
    Replace `YOUR_REVERSED_CLIENT_ID` with the value from your `GoogleService-Info.plist`
 
 2. **Download updated `GoogleService-Info.plist`** and replace the existing file in `ios/Runner/`

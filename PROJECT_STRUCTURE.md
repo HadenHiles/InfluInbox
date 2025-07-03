@@ -4,7 +4,7 @@ This document describes the organized folder structure for the InfluInbox Flutte
 
 ## 📁 Folder Structure
 
-```
+```text
 lib/
 ├── config/                 # Configuration files
 │   └── oauth_config.dart   # OAuth configuration for development/production
@@ -40,35 +40,46 @@ lib/
 ## 🏗️ Architecture Overview
 
 ### Feature-Based Architecture
+
 The app follows a feature-based architecture where each major feature has its own folder containing:
+
 - UI pages/screens
 - Feature-specific widgets
 - Feature-specific logic
 
 ### State Management
+
 Using **Riverpod** for state management with providers organized by domain:
+
 - `auth_provider.dart` - Authentication state
 - `email_provider.dart` - Email data and operations
 
 ### Models
+
 Data models with:
+
 - JSON serialization/deserialization
 - Copy methods for immutability
 - Business logic helpers
 
 ### Services
+
 External service integrations:
+
 - Firebase services (Auth, Firestore, Storage, etc.)
 - API clients (Gmail, Outlook)
 - Local storage services
 
 ### Utils
+
 Utility functions and constants:
+
 - App-wide constants
 - Helper functions
 - Common utilities
 
 ### Widgets
+
 Reusable UI components that can be used across features.
 
 ## 🚀 Getting Started
@@ -76,6 +87,7 @@ Reusable UI components that can be used across features.
 ### Current Implementation Status
 
 #### ✅ Completed
+
 - Project structure setup
 - Firebase integration
 - OAuth configuration (Google & Microsoft)
@@ -85,11 +97,13 @@ Reusable UI components that can be used across features.
 - Common widgets and utilities
 
 #### 🚧 In Progress
+
 - Email feature implementation
 - Settings feature
 - Analytics dashboard
 
 #### 📋 Todo
+
 - Gmail API integration
 - Outlook API integration
 - Offline support
@@ -177,21 +191,25 @@ class MyWidget extends StatelessWidget {
 ## 🛠️ Development Guidelines
 
 ### File Naming
+
 - Use snake_case for file names
 - Be descriptive but concise
 - Include the widget/class type in the name (e.g., `auth_page.dart`, `user_model.dart`)
 
 ### Code Organization
+
 - Keep files focused on a single responsibility
 - Use barrel exports when appropriate
 - Group related functionality together
 
-### State Management
+### State Management Guidelines
+
 - Use Riverpod providers for state management
 - Keep providers focused on specific domains
 - Use StateNotifier for complex state logic
 
 ### UI Development
+
 - Create reusable widgets in the `widgets/` folder
 - Use the app's design system (colors, spacing, etc.)
 - Follow Material Design guidelines
@@ -199,6 +217,7 @@ class MyWidget extends StatelessWidget {
 ## 🔧 Configuration
 
 ### OAuth Configuration
+
 The `oauth_config.dart` file manages OAuth scopes for development and production:
 
 ```dart
@@ -210,7 +229,9 @@ static const bool isDevelopment = false;
 ```
 
 ### Constants
+
 App-wide constants are defined in `utils/constants.dart`:
+
 - API endpoints
 - UI constants
 - Feature flags

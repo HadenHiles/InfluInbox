@@ -6,7 +6,7 @@ import '../../config/oauth_config.dart';
 
 /// Authentication page with Google and Microsoft OAuth
 class AuthPage extends ConsumerStatefulWidget {
-  const AuthPage({Key? key}) : super(key: key);
+  const AuthPage({super.key});
 
   @override
   ConsumerState<AuthPage> createState() => _AuthPageState();

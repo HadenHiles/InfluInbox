@@ -6,7 +6,7 @@ import '../../services/firebase_services.dart';
 
 /// Main dashboard page after authentication
 class DashboardPage extends ConsumerStatefulWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+  const DashboardPage({super.key});
 
   @override
   ConsumerState<DashboardPage> createState() => _DashboardPageState();

@@ -72,7 +72,7 @@ class DateUtils {
     final minute = dateTime.minute.toString().padLeft(2, '0');
 
     if (hour == 0) {
-      return '12:${minute} AM';
+      return '12:$minute AM';
     } else if (hour < 12) {
       return '$hour:$minute AM';
     } else if (hour == 12) {
