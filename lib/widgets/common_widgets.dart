@@ -78,7 +78,7 @@ class EmptyStateWidget extends StatelessWidget {
   final IconData? icon;
   final Widget? action;
 
-  const EmptyStateWidget({Key? key, required this.title, this.subtitle, this.icon = Icons.inbox_outlined, this.action}) : super(key: key);
+  const EmptyStateWidget({super.key, required this.title, this.subtitle, this.icon = Icons.inbox_outlined, this.action});
 
   @override
   Widget build(BuildContext context) {

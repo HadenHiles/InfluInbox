@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'services/firebase_services.dart';
 import 'config/router_config.dart';
+import 'providers/auth_provider.dart';
 import 'utils/constants.dart';
 
 void main() async {
@@ -31,7 +32,14 @@ class InfluInboxApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
 
-    return MaterialApp.router(title: AppConstants.appName, theme: _buildTheme(), routerConfig: router);
+    return MaterialApp.router(
+      title: AppConstants.appName,
+      theme: _buildTheme(),
+      routerConfig: router,
+      builder: (context, child) {
+        return AuthErrorListener(child: child ?? const SizedBox.shrink());
+      },
+    );
   }
 
   ThemeData _buildTheme() {
@@ -51,5 +59,34 @@ class InfluInboxApp extends ConsumerWidget {
         contentPadding: const EdgeInsets.all(AppConstants.defaultPadding),
       ),
     );
+  }
+}
+
+/// Widget that listens to auth errors and displays them globally
+class AuthErrorListener extends ConsumerWidget {
+  final Widget child;
+
+  const AuthErrorListener({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Listen to auth errors and show them
+    ref.listen<String?>(authErrorProvider, (previous, next) {
+      if (next != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(next),
+                backgroundColor: Colors.red,
+                action: SnackBarAction(label: 'Dismiss', textColor: Colors.white, onPressed: () => ref.read(authServiceProvider).clearError()),
+              ),
+            );
+          }
+        });
+      }
+    });
+
+    return child;
   }
 }

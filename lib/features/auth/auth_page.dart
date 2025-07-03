@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../services/firebase_services.dart';
+import '../../providers/auth_provider.dart';
 import '../../config/oauth_config.dart';
 
 /// Authentication page with Google and Microsoft OAuth
@@ -13,46 +13,36 @@ class AuthPage extends ConsumerStatefulWidget {
 }
 
 class _AuthPageState extends ConsumerState<AuthPage> {
-  bool isLoading = false;
-
   Future<void> _signInWithGoogle() async {
-    setState(() => isLoading = true);
     try {
-      await FirebaseAuthService.signInWithGoogle();
+      final authService = ref.read(authServiceProvider);
+      await authService.signInWithGoogle();
       if (mounted) {
         context.go('/dashboard');
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error signing in: $e')));
-      }
-    } finally {
-      if (mounted) {
-        setState(() => isLoading = false);
-      }
+      // Error handling is now done globally via the auth provider
+      // The error will be shown via the SnackBar in main.dart
     }
   }
 
   Future<void> _signInWithMicrosoft() async {
-    setState(() => isLoading = true);
     try {
-      await FirebaseAuthService.signInWithMicrosoft();
+      final authService = ref.read(authServiceProvider);
+      await authService.signInWithMicrosoft();
       if (mounted) {
         context.go('/dashboard');
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error signing in: $e')));
-      }
-    } finally {
-      if (mounted) {
-        setState(() => isLoading = false);
-      }
+      // Error handling is now done globally via the auth provider
+      // The error will be shown via the SnackBar in main.dart
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(isAuthLoadingProvider);
+
     return Scaffold(
       body: SafeArea(
         child: Padding(

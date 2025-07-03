@@ -145,6 +145,7 @@ context.goToSettings();
 ### Navigation in Widgets
 
 #### Button Navigation
+
 ```dart
 ElevatedButton(
   onPressed: () => context.goToDashboard(),
@@ -153,6 +154,7 @@ ElevatedButton(
 ```
 
 #### List Item Navigation
+
 ```dart
 ListTile(
   title: const Text('View Email'),
@@ -161,6 +163,7 @@ ListTile(
 ```
 
 #### Bottom Navigation
+
 ```dart
 BottomNavigationBar(
   onTap: (index) {
@@ -296,6 +299,7 @@ print('Current route: $currentRoute');
 ## 📚 Best Practices
 
 ### 1. Use Named Routes
+
 ```dart
 // Good
 context.goNamed('dashboard');
@@ -305,6 +309,7 @@ context.go('/dashboard');
 ```
 
 ### 2. Use Extension Methods
+
 ```dart
 // Good
 context.goToDashboard();
@@ -314,6 +319,7 @@ context.go('/dashboard');
 ```
 
 ### 3. Handle Parameters Safely
+
 ```dart
 // Good
 final emailId = state.pathParameters['emailId'];
@@ -327,6 +333,7 @@ final emailId = state.pathParameters['emailId']!; // Could crash
 ```
 
 ### 4. Check Authentication State
+
 ```dart
 // The router handles this automatically, but for manual checks:
 final user = ref.read(authStateProvider).value;

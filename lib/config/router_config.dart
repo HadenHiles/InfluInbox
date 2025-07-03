@@ -23,12 +23,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'root',
         redirect: (context, state) {
           // Check authentication state and redirect accordingly
-          final authState = ref.read(authStateProvider);
-          return authState.when(
-            data: (user) => user != null ? '/dashboard' : '/auth',
-            loading: () => null, // Stay on current route while loading
-            error: (_, __) => '/auth',
-          );
+          final isAuthenticated = ref.read(isAuthenticatedProvider);
+          final isLoading = ref.read(isAuthLoadingProvider);
+
+          if (isLoading) return null; // Stay on current route while loading
+          return isAuthenticated ? '/dashboard' : '/auth';
         },
         builder: (context, state) => const Scaffold(body: Center(child: CircularProgressIndicator())),
       ),
@@ -89,24 +88,24 @@ final routerProvider = Provider<GoRouter>((ref) {
 
     // Redirect logic for authentication
     redirect: (context, state) {
-      final authState = ref.read(authStateProvider);
+      final isAuthenticated = ref.read(isAuthenticatedProvider);
+      final isLoading = ref.read(isAuthLoadingProvider);
       final isOnAuthPage = state.uri.toString() == '/auth';
 
-      return authState.when(
-        data: (user) {
-          // If user is logged in but on auth page, redirect to dashboard
-          if (user != null && isOnAuthPage) {
-            return '/dashboard';
-          }
-          // If user is not logged in and not on auth page, redirect to auth
-          if (user == null && !isOnAuthPage && state.uri.toString() != '/') {
-            return '/auth';
-          }
-          return null; // No redirect needed
-        },
-        loading: () => null, // Don't redirect while loading
-        error: (_, __) => isOnAuthPage ? null : '/auth',
-      );
+      // Don't redirect while loading
+      if (isLoading) return null;
+
+      // If user is logged in but on auth page, redirect to dashboard
+      if (isAuthenticated && isOnAuthPage) {
+        return '/dashboard';
+      }
+
+      // If user is not logged in and not on auth page (except root), redirect to auth
+      if (!isAuthenticated && !isOnAuthPage && state.uri.toString() != '/') {
+        return '/auth';
+      }
+
+      return null; // No redirect needed
     },
   );
 });
