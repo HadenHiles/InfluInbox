@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>184330992881-7mpphb9elkos19c338j8hcuiaalr1dok.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.184330992881-7mpphb9elkos19c338j8hcuiaalr1dok</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>184330992881-59kehi0lmsdtt2qdumc2f3ssoblofu5p.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD7roVB8c_winFFOwnM5a-OGXt7EClmWOU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>184330992881</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.influinbox.influinbox</string>
+	<key>PROJECT_ID</key>
+	<string>influ-inbox</string>
+	<key>STORAGE_BUCKET</key>
+	<string>influ-inbox.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:184330992881:ios:6716c2e2242dc4348d7d50</string>
+</dict>
+</plist>
