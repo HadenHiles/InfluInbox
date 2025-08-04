@@ -17,8 +17,8 @@ class AppColors extends ThemeExtension<AppColors> {
     return AppColors(brand: Color.lerp(brand, other.brand, t)!, accent: Color.lerp(accent, other.accent, t)!);
   }
 
-  static const light = AppColors(brand: Color(0xFF0057FF), accent: Color(0xFFFFC107));
-  static const dark = AppColors(brand: Color(0xFF90CAF9), accent: Color(0xFFFFF59D));
+  static const light = AppColors(brand: Color(0xFF9ECCFE), accent: Color(0xFF173A6F));
+  static const dark = AppColors(brand: Color(0xFF9ECCFE), accent: Color(0xFF173A6F));
 }
 
 // Custom typography extension
@@ -39,12 +39,38 @@ class AppTypography extends ThemeExtension<AppTypography> {
   }
 
   static AppTypography light = AppTypography(
-    logo: const TextStyle(fontFamily: 'Montserrat', fontSize: 32, fontWeight: FontWeight.bold, color: Colors.blue),
-    sectionTitle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black87),
+    logo: const TextStyle(
+      fontFamily: 'Orbitron',
+      fontSize: 36,
+      fontWeight: FontWeight.w900,
+      letterSpacing: 2.5,
+      color: Color(0xFF173A6F), // accent
+      shadows: [Shadow(blurRadius: 8, color: Color(0xFF9ECCFE), offset: Offset(0, 2))],
+    ),
+    sectionTitle: const TextStyle(
+      fontFamily: 'Orbitron',
+      fontSize: 22,
+      fontWeight: FontWeight.w700,
+      color: Color(0xFF173A6F), // accent
+      letterSpacing: 1.2,
+    ),
   );
   static AppTypography dark = AppTypography(
-    logo: const TextStyle(fontFamily: 'Montserrat', fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
-    sectionTitle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white70),
+    logo: const TextStyle(
+      fontFamily: 'Orbitron',
+      fontSize: 36,
+      fontWeight: FontWeight.w900,
+      letterSpacing: 2.5,
+      color: Color(0xFF9ECCFE), // brand
+      shadows: [Shadow(blurRadius: 12, color: Color(0xFF173A6F), offset: Offset(0, 2))],
+    ),
+    sectionTitle: const TextStyle(
+      fontFamily: 'Orbitron',
+      fontSize: 22,
+      fontWeight: FontWeight.w700,
+      color: Color(0xFF9ECCFE), // brand
+      letterSpacing: 1.2,
+    ),
   );
 }
 
@@ -81,5 +107,77 @@ class AppShapes extends ThemeExtension<AppShapes> {
 
 // Easily editable theme data
 ThemeData appTheme(BuildContext context, {bool dark = false}) {
-  return ThemeData(brightness: dark ? Brightness.dark : Brightness.light, colorScheme: dark ? ColorScheme.dark() : ColorScheme.light(), extensions: <ThemeExtension<dynamic>>[dark ? AppColors.dark : AppColors.light, dark ? AppTypography.dark : AppTypography.light, dark ? AppShapes.dark : AppShapes.light]);
+  final colorScheme = ColorScheme(
+    brightness: dark ? Brightness.dark : Brightness.light,
+    primary: const Color(0xFF9ECCFE), // brand
+    onPrimary: Colors.white,
+    secondary: const Color(0xFF173A6F), // accent
+    onSecondary: Colors.white,
+    error: Colors.redAccent,
+    onError: Colors.white,
+    surface: dark ? const Color(0xFF101624) : const Color(0xFFF5F8FF),
+    onSurface: dark ? Colors.white : const Color(0xFF173A6F),
+  );
+  return ThemeData(
+    brightness: dark ? Brightness.dark : Brightness.light,
+    colorScheme: colorScheme,
+    scaffoldBackgroundColor: colorScheme.surface,
+    cardColor: colorScheme.surface,
+    appBarTheme: AppBarTheme(
+      backgroundColor: colorScheme.surface,
+      foregroundColor: colorScheme.onSurface,
+      elevation: 2,
+      titleTextStyle: dark ? AppTypography.dark.logo : AppTypography.light.logo,
+      iconTheme: IconThemeData(color: colorScheme.primary),
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: colorScheme.primary, foregroundColor: colorScheme.onPrimary, shape: const StadiumBorder()),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: dark ? const Color(0xFF232B43) : Colors.white,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: colorScheme.primary.withValues(alpha: 0.3)), // Slightly transparent primary color
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: colorScheme.primary, width: 2),
+      ),
+      labelStyle: TextStyle(color: colorScheme.secondary),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        textStyle: dark ? AppTypography.dark.sectionTitle : AppTypography.light.sectionTitle,
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: colorScheme.secondary,
+        side: BorderSide(color: colorScheme.secondary, width: 1.5),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        textStyle: dark ? AppTypography.dark.sectionTitle : AppTypography.light.sectionTitle,
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: colorScheme.secondary,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        textStyle: dark ? AppTypography.dark.sectionTitle : AppTypography.light.sectionTitle,
+      ),
+    ),
+    cardTheme: CardThemeData(
+      color: colorScheme.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+    ),
+    extensions: <ThemeExtension<dynamic>>[dark ? AppColors.dark : AppColors.light, dark ? AppTypography.dark : AppTypography.light, dark ? AppShapes.dark : AppShapes.light],
+    fontFamily: 'Orbitron',
+    useMaterial3: true,
+  );
 }

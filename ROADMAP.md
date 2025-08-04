@@ -50,7 +50,7 @@ A step-by-step checklist to kickstart and organize the InfluInbox Flutter app, o
 
 ## 🟠 Phase 1.5: Branding & Theme System
 
-- [ ] **Create a Theme Screen / Design System Showcase**
+- [x] **Create a Theme Screen / Design System Showcase**
   - **Copilot:**  
     `Create a /lib/features/theme/theme_screen.dart page that displays all major widgets, buttons, text styles, inputs, cards, and color swatches used in the app.`
   - **Copilot:**  
