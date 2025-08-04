@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# OAuth and API Keys
+.env
+google-services.json
+GoogleService-Info.plist
+*.p12
+*.pem
