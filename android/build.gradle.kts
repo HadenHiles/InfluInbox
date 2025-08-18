@@ -20,8 +20,4 @@ tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
 
-buildscript {
-    dependencies {
-        classpath("com.google.gms:google-services:4.4.1")
-    }
-}
+// Removed legacy buildscript block; using plugin DSL declared in settings.gradle.kts

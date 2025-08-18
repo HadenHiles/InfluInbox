@@ -11,7 +11,8 @@ plugins {
 android {
     namespace = "com.hadenhiles.influinbox"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // Override Flutter's default NDK version to satisfy plugins requiring a newer NDK.
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
