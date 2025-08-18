@@ -14,14 +14,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "184330992881-59kehi0lmsdtt2qdumc2f3ssoblofu5p.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.influinbox.influinbox",
-            "certificate_hash": "069bd1a9079982a1780ffac2fa85eacd1dee7c6f"
-          }
-        },
-        {
           "client_id": "184330992881-56uc418u8uvemfhpl19sj718fit5o6td.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -39,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "184330992881-7mpphb9elkos19c338j8hcuiaalr1dok.apps.googleusercontent.com",
+              "client_id": "184330992881-bthrqgvll9qrifihf0h72g8mbkg6m35a.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.influinbox.influinbox"
+                "bundle_id": "com.hadenhiles.influinbox"
               }
             }
           ]
