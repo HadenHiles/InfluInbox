@@ -47,6 +47,7 @@ dependencies:
   # OAuth packages
   google_sign_in: ^6.2.1
   extension_google_sign_in_as_googleapis_auth: ^2.0.12
+  flutter_web_auth_2: ^3.0.7
 
   # Utility packages
   crypto: ^3.0.3

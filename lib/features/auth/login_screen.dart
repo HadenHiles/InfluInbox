@@ -30,10 +30,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ref.read(authLoadingProvider.notifier).state = true;
     var success = false;
     try {
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
       if (_isRegister) {
-        await FirebaseAuthService.createUserWithEmailAndPassword(email: _emailController.text.trim(), password: _passwordController.text.trim());
+        await FirebaseAuthService.secureEmailSignUp(email: email, password: password);
       } else {
-        await FirebaseAuthService.signInWithEmailAndPassword(email: _emailController.text.trim(), password: _passwordController.text.trim());
+        await FirebaseAuthService.secureEmailSignIn(email: email, password: password);
       }
       success = true;
     } catch (e) {

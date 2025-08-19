@@ -6,6 +6,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import '../config/oauth_config.dart';
 
 /// Firebase services singleton for easy access throughout the app
@@ -80,8 +81,17 @@ class FirebaseServices {
 class FirebaseAuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Use configuration-based scopes
-  static final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: OAuthConfig.googleScopes);
+  // Dynamic GoogleSignIn instance (recreated if serverClientId changes)
+  static GoogleSignIn _googleSignIn = GoogleSignIn(scopes: OAuthConfig.googleScopes, serverClientId: OAuthConfig.googleClientId);
+  static String? _lastGoogleServerClientId = OAuthConfig.googleClientId;
+
+  static void _ensureGoogleSignInCurrent() {
+    final currentId = OAuthConfig.googleClientId;
+    if (_lastGoogleServerClientId != currentId) {
+      _googleSignIn = GoogleSignIn(scopes: OAuthConfig.googleScopes, serverClientId: currentId);
+      _lastGoogleServerClientId = currentId;
+    }
+  }
 
   /// Get current user
   static User? get currentUser => _auth.currentUser;
@@ -100,6 +110,33 @@ class FirebaseAuthService {
   /// Create user with email and password
   static Future<UserCredential> createUserWithEmailAndPassword({required String email, required String password}) async {
     return await _auth.createUserWithEmailAndPassword(email: email, password: password);
+  }
+
+  /// Backend-assisted email signup via callable (returns custom token). Falls back to client method on error.
+  static Future<UserCredential> secureEmailSignUp({required String email, required String password, String? recaptchaToken}) async {
+    try {
+      final result = await FirebaseFunctionsService.callFunction(functionName: 'emailSignUp', parameters: {'email': email, 'password': password, if (recaptchaToken != null) 'recaptchaToken': recaptchaToken});
+      final data = result.data as Map<String, dynamic>;
+      final customToken = data['customToken'] as String?;
+      if (customToken == null) throw Exception('Missing customToken from backend');
+      final cred = await _auth.signInWithCustomToken(customToken);
+      return cred;
+    } catch (e) {
+      print('secureEmailSignUp failed, falling back: $e');
+      return await createUserWithEmailAndPassword(email: email, password: password);
+    }
+  }
+
+  /// Backend-assisted email sign-in using REST verification on server (stores encrypted refresh token). Falls back on error.
+  static Future<UserCredential> secureEmailSignIn({required String email, required String password, String? recaptchaToken}) async {
+    try {
+      await FirebaseFunctionsService.callFunction(functionName: 'emailSignIn', parameters: {'email': email, 'password': password, if (recaptchaToken != null) 'recaptchaToken': recaptchaToken});
+      // Backend returns idToken & uid; we still sign in client side with email/password for Firebase persistence
+      return await signInWithEmailAndPassword(email: email, password: password);
+    } catch (e) {
+      print('secureEmailSignIn failed, falling back: $e');
+      return await signInWithEmailAndPassword(email: email, password: password);
+    }
   }
 
   /// Switch to production scopes (call this after Google verification)
@@ -129,22 +166,40 @@ class FirebaseAuthService {
   /// Sign in with Google (Gmail)
   static Future<UserCredential?> signInWithGoogle() async {
     try {
-      // Trigger the authentication flow
+      // Ensure we have latest server client ID (after runtime load or dart-define)
+      _ensureGoogleSignInCurrent();
+      // Trigger interactive sign-in
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return null; // user aborted
 
-      if (googleUser == null) {
-        // User canceled the sign-in
-        return null;
-      }
-
-      // Obtain the auth details from the request
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-      // Create a new credential
       final credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+      final userCred = await _auth.signInWithCredential(credential);
 
-      // Sign in to Firebase with the Google credential
-      return await _auth.signInWithCredential(credential);
+      // Attempt secure server-side token storage (authorization code exchange) if we obtained a serverAuthCode
+      final serverAuthCode = googleUser.serverAuthCode; // Provided when server client id configured
+      if (serverAuthCode != null && userCred.user != null) {
+        try {
+          final recaptchaToken = await _maybeGetRecaptchaToken();
+          await FirebaseFunctionsService.callFunction(
+            functionName: 'oauthLogin',
+            parameters: {
+              'provider': 'google',
+              'code': serverAuthCode,
+              // 'postmessage' works for installed apps / google_sign_in internal flow exchange
+              'redirectUri': 'postmessage',
+              'userId': userCred.user!.uid,
+              if (recaptchaToken != null) 'recaptchaToken': recaptchaToken,
+            },
+          );
+        } catch (e) {
+          // Non-fatal: user remains signed in, but tokens not stored on backend
+          print('oauthLogin callable failed: $e');
+        }
+      } else {
+        print('No serverAuthCode available; skipping backend oauthLogin token storage');
+      }
+      return userCred;
     } catch (e) {
       print('Error signing in with Google: $e');
       rethrow;
@@ -162,8 +217,27 @@ class FirebaseAuthService {
       microsoftProvider.addScope('https://graph.microsoft.com/Mail.Send');
       microsoftProvider.addScope('https://graph.microsoft.com/User.Read');
 
-      // Sign in with popup (web) or redirect (mobile)
-      return await _auth.signInWithProvider(microsoftProvider);
+      // Sign in with popup (web) or redirect (mobile) to authenticate user in Firebase
+      final userCred = await _auth.signInWithProvider(microsoftProvider);
+
+      // After Firebase sign-in, perform explicit authorization code flow for backend token storage
+      if (userCred.user != null) {
+        try {
+          final code = await _acquireMicrosoftAuthorizationCode();
+          if (code != null) {
+            final recaptchaToken = await _maybeGetRecaptchaToken();
+            await FirebaseFunctionsService.callFunction(
+              functionName: 'oauthLogin',
+              parameters: {'provider': 'microsoft', 'code': code, 'redirectUri': OAuthConfig.microsoftRedirectUri, 'userId': userCred.user!.uid, if (recaptchaToken != null) 'recaptchaToken': recaptchaToken},
+            );
+          } else {
+            print('Microsoft auth code acquisition canceled by user');
+          }
+        } catch (e) {
+          print('Failed Microsoft code exchange: $e');
+        }
+      }
+      return userCred;
     } catch (e) {
       print('Error signing in with Microsoft: $e');
       rethrow;
@@ -212,6 +286,34 @@ class FirebaseAuthService {
   /// Sign out from all providers
   static Future<void> signOut() async {
     await Future.wait([_auth.signOut(), _googleSignIn.signOut()]);
+  }
+
+  /// Optionally acquire a reCAPTCHA token (placeholder - integrate web or App Check if required)
+  static Future<String?> _maybeGetRecaptchaToken() async {
+    // TODO: Implement real reCAPTCHA v3 invocation on web, or pass App Check token if backend adapts
+    return null;
+  }
+
+  /// Launch Microsoft authorization endpoint to obtain an authorization code for backend exchange.
+  static Future<String?> _acquireMicrosoftAuthorizationCode() async {
+    try {
+      final scope = Uri.encodeComponent(OAuthConfig.microsoftScopes.join(' '));
+      final authUrl = Uri.parse(
+        'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
+        '?client_id=${OAuthConfig.microsoftClientId}'
+        '&response_type=code'
+        '&redirect_uri=${Uri.encodeComponent(OAuthConfig.microsoftRedirectUri)}'
+        '&response_mode=query'
+        '&prompt=select_account'
+        '&scope=$scope',
+      );
+      final result = await FlutterWebAuth2.authenticate(url: authUrl.toString(), callbackUrlScheme: OAuthConfig.microsoftRedirectUri.split('://').first);
+      final returned = Uri.parse(result);
+      return returned.queryParameters['code'];
+    } catch (e) {
+      print('Microsoft code flow error: $e');
+      return null;
+    }
   }
 
   /// Send password reset email

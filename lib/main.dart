@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'firebase_options.dart';
+import 'services/oauth_runtime_config.dart';
 import 'router.dart';
 import 'features/theme/theme_screen.dart';
 import 'features/theme/app_theme.dart';
@@ -13,6 +14,12 @@ void main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Load public OAuth client IDs early (ignore errors; getters will show placeholders if failed)
+  try {
+    await OAuthRuntimeConfigService.load();
+  } catch (e) {
+    debugPrint('OAuth config load failed: $e');
+  }
   runApp(const ProviderScope(child: InfluInboxApp()));
 }
 
