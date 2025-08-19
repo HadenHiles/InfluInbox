@@ -63,7 +63,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final error = ref.watch(authErrorProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign In')),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),

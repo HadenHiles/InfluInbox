@@ -1,16 +1,22 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "Node16",
+    "moduleResolution": "node16",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
-    "target": "es2017",
-    "lib": ["es2017"],
+    "target": "es2021",
+    "lib": [
+      "es2021"
+    ],
     "esModuleInterop": true,
-    "types": [],
-    "rootDir": "src"
+    "types": [
+      "node"
+    ],
+    "rootDir": "src",
+    "skipLibCheck": true
   },
   "compileOnSave": true,
   "include": [
