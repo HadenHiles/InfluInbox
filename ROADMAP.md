@@ -30,7 +30,7 @@ A step-by-step checklist to kickstart and organize the InfluInbox Flutter app, o
     `Generate setup code to initialize Firebase for Android, iOS, and web in Flutter. Show platform-specific notes for config files.`
   - Place downloaded config files in their respective platform folders.
 
-- [ ] **Enable Google & Microsoft OAuth2 Apps**
+- [x] **Enable Google & Microsoft OAuth2 Apps**
 
   - Register Google OAuth2 app (Gmail) and Microsoft OAuth2 app (Outlook).
   - Add redirect URIs (Firebase function URLs).
@@ -38,7 +38,7 @@ A step-by-step checklist to kickstart and organize the InfluInbox Flutter app, o
     `Give me detailed steps to register OAuth2 apps for Google (Gmail) and Microsoft (Outlook) for use with Firebase Authentication.`
   - Store client IDs/secrets securely for backend config.
 
-- [ ] **Project Structure & Boilerplate**
+- [x] **Project Structure & Boilerplate**
   - **Copilot:**  
     `Set up recommended project folders: /lib/features, /lib/services, /lib/models, /lib/providers, /lib/widgets, /lib/utils.`
   - **Copilot:**  

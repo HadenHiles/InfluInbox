@@ -133,16 +133,35 @@ ThemeData appTheme(BuildContext context, {bool dark = false}) {
     floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: colorScheme.primary, foregroundColor: colorScheme.onPrimary, shape: const StadiumBorder()),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: dark ? const Color(0xFF232B43) : Colors.white,
+      fillColor: dark ? const Color(0xFF1B2335) : Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+      labelStyle: TextStyle(color: dark ? colorScheme.primary : colorScheme.secondary, fontWeight: FontWeight.w600),
+      floatingLabelStyle: TextStyle(color: dark ? colorScheme.primary : colorScheme.secondary, fontWeight: FontWeight.w700),
+      hintStyle: TextStyle(color: dark ? Colors.white.withValues(alpha: 0.65) : colorScheme.onSurface.withValues(alpha: 0.6), fontWeight: FontWeight.w400),
+      helperStyle: TextStyle(color: dark ? Colors.white70 : colorScheme.secondary.withValues(alpha: 0.8)),
+      errorStyle: TextStyle(color: colorScheme.error, fontWeight: FontWeight.w600),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: colorScheme.primary.withValues(alpha: 0.3)), // Slightly transparent primary color
+        borderSide: BorderSide(color: (dark ? colorScheme.primary : colorScheme.secondary).withValues(alpha: 0.3)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: (dark ? colorScheme.primary : colorScheme.secondary).withValues(alpha: 0.35)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(color: colorScheme.primary, width: 2),
       ),
-      labelStyle: TextStyle(color: colorScheme.secondary),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: colorScheme.error.withValues(alpha: 0.9), width: 1.5),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: colorScheme.error, width: 2),
+      ),
+      prefixIconColor: dark ? colorScheme.primary.withValues(alpha: 0.85) : colorScheme.secondary.withValues(alpha: 0.85),
+      suffixIconColor: dark ? colorScheme.primary.withValues(alpha: 0.85) : colorScheme.secondary.withValues(alpha: 0.85),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -153,10 +172,20 @@ ThemeData appTheme(BuildContext context, {bool dark = false}) {
         textStyle: dark ? AppTypography.dark.sectionTitle : AppTypography.light.sectionTitle,
       ),
     ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        textStyle: dark ? AppTypography.dark.sectionTitle : AppTypography.light.sectionTitle,
+      ),
+    ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: colorScheme.secondary,
-        side: BorderSide(color: colorScheme.secondary, width: 1.5),
+        foregroundColor: dark ? colorScheme.primary : colorScheme.secondary,
+        side: BorderSide(color: dark ? colorScheme.primary : colorScheme.secondary, width: 1.5),
+        backgroundColor: dark ? colorScheme.primary.withValues(alpha: 0.12) : null,
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         textStyle: dark ? AppTypography.dark.sectionTitle : AppTypography.light.sectionTitle,
@@ -164,7 +193,7 @@ ThemeData appTheme(BuildContext context, {bool dark = false}) {
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        foregroundColor: colorScheme.secondary,
+        foregroundColor: dark ? colorScheme.primary : colorScheme.secondary,
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         textStyle: dark ? AppTypography.dark.sectionTitle : AppTypography.light.sectionTitle,
